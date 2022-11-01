@@ -10,7 +10,7 @@ To Do List project is a small application where you can save your To do things o
 
 ## Live Demo
 
-[Open live demo](https://kweeka1.github.io/to-do-list/)
+[Open live demo](https://kweeka1.github.io/to-do-list/dist/)
 
 ### Setup
 - Install git and nodejs.
