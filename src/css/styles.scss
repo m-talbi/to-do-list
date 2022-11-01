@@ -9,7 +9,6 @@
 body {
   margin: 2rem;
   font-family: 'Poppins', sans-serif;
-  user-select: none;
 }
 
 .app__wrapper {
@@ -18,15 +17,6 @@ body {
   width: 100%;
   border-radius: 4px;
   overflow: hidden;
-}
-
-.dragging {
-  opacity: 0.5;
-}
-
-.draggable {
-  cursor: move;
-  user-select: none;
 }
 
 header {
@@ -99,7 +89,6 @@ li {
     & .options-icon {
       padding: 0.6rem;
       font-size: 20px;
-      user-select: none;
     }
   }
 }
