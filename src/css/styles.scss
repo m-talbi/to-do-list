@@ -48,7 +48,7 @@ header {
 main {
   width: 100%;
 
-  & input[type=text] {
+  & #task-message {
     width: 100%;
     border: none;
     height: 3rem;
