@@ -4,13 +4,32 @@ const form = document.querySelector('form');
 
 let toDoList = JSON.parse(localStorage.getItem('todo')) || [];
 
+toDoList = [
+  ...toDoList,
+  {
+    description: 'Do my math homework',
+    isCompleted: false,
+    id: 1,
+  },
+  {
+    description: 'Take out the trash',
+    isCompleted: false,
+    id: 2,
+  },
+  {
+    description: 'Feed my cats',
+    isCompleted: false,
+    id: 3,
+  },
+];
+
 const appendTaskEl = (task) => {
   const content = `
   <li class="task" draggable="true">
     <article id="${task.id}">
       <div class="todo__task">
         <input type="checkbox" ${task.isCompleted ? 'checked' : ''} />
-        <p>${task.message}</p>
+        <p>${task.description}</p>
       </div>
       <i class="fa-solid fa-ellipsis-vertical draggable options-icon"></i>
     </article>
@@ -23,13 +42,13 @@ const handleTaskInputsClick = (id) => {
   const taskEl = document.getElementById(`${id}`);
 
   const taskCheckBox = taskEl.querySelector('input');
-  const taskMessage = taskEl.querySelector('p');
+  const taskdescription = taskEl.querySelector('p');
 
   taskCheckBox.addEventListener('click', () => {
     if (taskCheckBox.checked) {
-      taskMessage.style.textDecorationLine = 'line-through';
+      taskdescription.style.textDecorationLine = 'line-through';
     } else {
-      taskMessage.style.textDecorationLine = 'none';
+      taskdescription.style.textDecorationLine = 'none';
     }
   });
 };
@@ -61,7 +80,7 @@ const handleFormSubmit = (form) => {
     event.preventDefault();
 
     const task = {
-      message: form['task-message'].value,
+      description: form['task-description'].value,
       isCompleted: false,
       id: toDoList.length === 0 ? 1 : toDoList.at(-1).id + 1,
     };

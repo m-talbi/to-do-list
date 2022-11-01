@@ -5,7 +5,7 @@
   "scripts": {
     "start": "live-server --no-browser --watch=./dist --open=./dist/",
     "dev": "webpack --mode=development --watch",
-    "build": "webpack --mode=production"
+    "build": "webpack --mode=production --watch"
   },
   "dependencies": {
     "css-loader": "^6.7.1",
