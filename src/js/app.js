@@ -5,21 +5,20 @@ const form = document.querySelector('form');
 let toDoList = JSON.parse(localStorage.getItem('todo')) || [];
 
 toDoList = [
-  ...toDoList,
   {
     description: 'Do my math homework',
     isCompleted: false,
-    id: 1,
+    id: 9877,
   },
   {
     description: 'Take out the trash',
     isCompleted: false,
-    id: 2,
+    id: 9878,
   },
   {
     description: 'Feed my cats',
     isCompleted: false,
-    id: 3,
+    id: 9999,
   },
 ];
 
