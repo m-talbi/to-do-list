@@ -1,5 +1,7 @@
 const { resolve } = require('path');
+// eslint-disable-next-line
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+// eslint-disable-next-line
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
@@ -9,11 +11,8 @@ module.exports = {
       {
         test: /\.scss$/i,
         use: [
-          // Creates `style` nodes from JS strings
           MiniCssExtractPlugin.loader,
-          // Translates CSS into CommonJS
           'css-loader',
-          // Compiles Sass to CSS
           'sass-loader',
         ],
       },
@@ -36,6 +35,8 @@ module.exports = {
       title: 'To Do List',
       template: resolve(__dirname, 'src', 'index.html'),
     }),
-    new MiniCssExtractPlugin({ filename: '[name].css' }),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+    }),
   ],
 };
