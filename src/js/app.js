@@ -1,4 +1,4 @@
-import addDraggablesListener from './dragEffect.js';
+import { addDraggablesListener, addDraggableListener } from './dragEffect.js';
 
 const tasksListEl = document.getElementById('tasksList');
 const clearListBtn = document.getElementById('clear-list');
@@ -27,7 +27,7 @@ const handleTaskCheckBoxClick = (id) => {
   const taskCheckBox = taskEl.querySelector('input');
   const taskDescription = taskEl.querySelector('p');
 
-  taskCheckBox.addEventListener('click', () => {
+  taskCheckBox.addEventListener('change', () => {
     if (taskCheckBox.checked) {
       toDoList.find((task) => task.id === parseInt(taskEl.id, 10)).isCompleted = true;
       localStorage.setItem('todo', JSON.stringify(toDoList));
@@ -77,12 +77,12 @@ const handleFormSubmit = () => {
 
     appendTaskEl(task);
     handleTaskCheckBoxClick(task.id);
+    addDraggableListener(tasksListEl.lastElementChild);
     form.reset();
-    addDraggablesListener();
   });
 };
 
 handleFormSubmit();
 displayToDoList();
 handleClearBtnClick();
-addDraggablesListener();
+addDraggablesListener(toDoList);

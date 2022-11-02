@@ -1,33 +1,35 @@
-let dragStartEl;
+let dragStartTaskEl;
+let todoListItems;
 
-const swapTaskEl = (dragStartEl, endEl) => {
+const swapTaskEl = (dragStartTaskEl, dragEndTaskEl) => {
   const listContainer = document.querySelectorAll('ul li');
-  let task1;
-  let task2;
+  let taskOneIndex;
+  let taskTwoIndex;
 
   listContainer.forEach((task, index) => {
-    if (task === dragStartEl) {
-      task1 = index;
+    if (task === dragStartTaskEl) {
+      taskOneIndex = index;
     }
-    if (task === endEl) {
-      task2 = index;
+    if (task === dragEndTaskEl) {
+      taskTwoIndex = index;
     }
   });
 
-  if (task1 > task2) {
-    listContainer.item(task2).insertAdjacentElement('afterend', dragStartEl);
-    listContainer.item(task1).insertAdjacentElement('afterend', endEl);
+  if (taskOneIndex > taskTwoIndex) {
+    listContainer.item(taskTwoIndex).insertAdjacentElement('beforebegin', dragStartTaskEl);
+    listContainer.item(taskOneIndex).insertAdjacentElement('afterend', dragEndTaskEl);
   } else {
-    listContainer.item(task1).insertAdjacentElement('afterend', endEl);
-    listContainer.item(task2).insertAdjacentElement('afterend', dragStartEl);
+    listContainer.item(taskTwoIndex).insertAdjacentElement('afterend', dragStartTaskEl);
+    listContainer.item(taskOneIndex).insertAdjacentElement('beforebegin', dragEndTaskEl);
   }
 
-  endEl.classList.remove('drag_over');
-  dragStartEl.classList.remove('drag_over');
+  const tmpItem = todoListItems.splice(taskOneIndex, 1)[0];
+  todoListItems.splice(taskTwoIndex, 0, tmpItem);
+  localStorage.setItem('todo', JSON.stringify(todoListItems));
 };
 
 const dragStart = (ev) => {
-  dragStartEl = ev.target.closest('li');
+  dragStartTaskEl = ev.target.closest('li');
 };
 
 const dragOver = (ev) => {
@@ -35,34 +37,36 @@ const dragOver = (ev) => {
 };
 
 const drop = (ev) => {
-  const dragEndEl = ev.target.closest('li');
-  swapTaskEl(dragStartEl, dragEndEl);
+  const dragEndTaskEl = ev.target.closest('li');
+  swapTaskEl(dragStartTaskEl, dragEndTaskEl);
   ev.target.closest('article').classList.remove('drag_over');
 };
 
 const dragEnter = (ev) => {
-  const enteredEl = ev.target.closest('article');
-  enteredEl.classList.add('drag_over');
+  ev.target.closest('li').classList.add('drag_over');
 };
 
 const dragLeave = (ev) => {
-  ev.target.closest('article').classList.remove('drag_over');
+  ev.target.closest('li').classList.remove('drag_over');
 };
 
-const addDraggablesListener = () => {
+export const addDraggableListener = (draggableItem) => {
+  draggableItem.addEventListener('dragstart', dragStart);
+  draggableItem.addEventListener('dragover', dragOver);
+  draggableItem.addEventListener('drop', drop);
+  draggableItem.addEventListener('dragenter', dragEnter);
+  draggableItem.addEventListener('dragleave', dragLeave);
+};
+
+export const addDraggablesListener = (ListItems) => {
   const draggables = document.querySelectorAll('.task');
-  const draggableList = document.querySelectorAll('ul li');
+  todoListItems = ListItems;
 
   draggables.forEach((draggable) => {
     draggable.addEventListener('dragstart', dragStart);
-  });
-
-  draggableList.forEach((draggable) => {
     draggable.addEventListener('dragover', dragOver);
     draggable.addEventListener('drop', drop);
     draggable.addEventListener('dragenter', dragEnter);
     draggable.addEventListener('dragleave', dragLeave);
   });
 };
-
-export default addDraggablesListener;
