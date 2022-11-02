@@ -43,24 +43,26 @@ const drop = (ev) => {
 };
 
 const dragEnter = (ev) => {
-  ev.target.closest('li').classList.add('drag_over');
+  ev.target.closest('article').classList.add('drag_over');
 };
 
 const dragLeave = (ev) => {
-  ev.target.closest('li').classList.remove('drag_over');
+  ev.target.closest('article').classList.remove('drag_over');
 };
 
-export const addDraggableListener = (draggableItem) => {
+export const addDraggableListener = (draggableItem, listItems) => {
   draggableItem.addEventListener('dragstart', dragStart);
   draggableItem.addEventListener('dragover', dragOver);
   draggableItem.addEventListener('drop', drop);
   draggableItem.addEventListener('dragenter', dragEnter);
   draggableItem.addEventListener('dragleave', dragLeave);
+
+  todoListItems = listItems;
 };
 
-export const addDraggablesListener = (ListItems) => {
+export const addDraggablesListener = (listItems) => {
   const draggables = document.querySelectorAll('.task');
-  todoListItems = ListItems;
+  todoListItems = listItems;
 
   draggables.forEach((draggable) => {
     draggable.addEventListener('dragstart', dragStart);
