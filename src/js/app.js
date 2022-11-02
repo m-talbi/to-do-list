@@ -31,7 +31,7 @@ const removeTaskEl = (taskEl) => {
 };
 
 const handleTaskBtnsClick = (id) => {
-  const taskEl = tasksListEl.getElementById(`${id}`);
+  const taskEl = tasksListEl.querySelector(`#${id}`);
 
   const taskCheckBox = taskEl.querySelector('input');
   const taskDeleteIcon = taskEl.querySelector('.delete-option-icon');
@@ -80,7 +80,7 @@ const handleFormSubmit = () => {
     const task = {
       description: form['task-description'].value,
       isCompleted: false,
-      id: Math.random().toString(32).replace(/0\./, ''),
+      id: `task_${Math.random().toString(32).replace(/0\./, '')}`,
     };
 
     toDoList.push(task);
