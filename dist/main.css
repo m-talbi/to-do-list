@@ -90,9 +90,18 @@ li article .todo__task {
 li article .todo__task input[type=checkbox] {
   cursor: pointer;
 }
-li article .options-icon {
+li article .task_options {
+  display: flex;
+  gap: 1rem;
+}
+li article .task_options i {
   padding: 0.6rem;
   font-size: 20px;
+}
+li article .task_options .delete-option-icon {
+  cursor: pointer;
+}
+li article .task_options .drag-options-icon {
   cursor: move;
 }
 

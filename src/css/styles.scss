@@ -94,10 +94,22 @@ li {
       }
     }
 
-    & .options-icon {
-      padding: 0.6rem;
-      font-size: 20px;
-      cursor: move;
+    & .task_options {
+      display: flex;
+      gap: 1rem;
+
+      & i {
+        padding: 0.6rem;
+        font-size: 20px;
+      }
+
+      & .delete-option-icon {
+        cursor: pointer;
+      }
+
+      & .drag-options-icon {
+        cursor: move;
+      }
     }
   }
 }
