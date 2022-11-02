@@ -19,6 +19,14 @@ body {
   overflow: hidden;
 }
 
+.line_through {
+  text-decoration-line: line-through;
+}
+
+.drag_over {
+  background-color: rgb(214, 214, 214);
+}
+
 header {
   background-color: rgb(44, 102, 160);
   width: 100%;
@@ -89,6 +97,7 @@ li {
     & .options-icon {
       padding: 0.6rem;
       font-size: 20px;
+      cursor: move;
     }
   }
 }
