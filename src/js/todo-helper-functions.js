@@ -16,7 +16,7 @@ const placeCursorTextEnd = (inputEl) => {
 const hideTaskEl = (taskEl, taskEditInput, taskCheckBox) => {
   taskEditInput.classList.add('edit_active');
   taskEditInput.style.width = `${taskEl.offsetWidth}px`;
-  taskEditInput.style.height = `${taskEl.offsetHeight}px`;
+  taskEditInput.style.height = `${taskEl.offsetHeight + 1}px`;
 
   taskCheckBox.setAttribute('disabled', true);
   taskEl.setAttribute('draggable', false);
@@ -83,10 +83,7 @@ export const appendTaskEl = (task, tasksListEl) => {
 export const removeTaskEl = (taskEl, taskListEl, toDoList, callback) => {
   const filteredTaskList = toDoList.filter((task) => task.index !== parseInt(taskEl.id, 10));
 
-  toDoList = filteredTaskList.reduce((tasks, task, idx) => {
-    const next = idx + 1;
-    return [...tasks, { ...task, index: next }];
-  }, []);
+  toDoList = filteredTaskList.map((task, idx) => ({ ...task, index: idx + 1 }));
 
   localStorage.setItem('todo', JSON.stringify(toDoList));
   taskListEl.innerHTML = '';

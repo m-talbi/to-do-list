@@ -15,10 +15,7 @@ let toDoList;
 const handleClearListBtnClick = (displayToDoList) => {
   clearListBtn.addEventListener('click', () => {
     const filteredTaskList = toDoList.filter((task) => !task.isCompleted);
-    toDoList = filteredTaskList.reduce((tasks, task, idx) => {
-      const next = idx + 1;
-      return [...tasks, { ...task, index: next }];
-    }, []);
+    toDoList = filteredTaskList.map((task, idx) => ({ ...task, index: idx + 1 }));
 
     localStorage.setItem('todo', JSON.stringify(toDoList));
     tasksListEl.innerHTML = '';
@@ -62,7 +59,7 @@ const handleFormSubmit = () => {
     event.preventDefault();
 
     const taskObj = {
-      description: form['task-description'].value,
+      description: form['task-description'].value.trim(),
       isCompleted: false,
       index: toDoList.length === 0 ? 1 : toDoList.at(-1).index + 1,
     };

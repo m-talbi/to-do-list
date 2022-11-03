@@ -27,10 +27,7 @@ const swapTaskEl = (dragStartTaskEl, dragEndTaskEl, callback) => {
   const tmpItem = todoListItems.splice(taskOneIndex, 1)[0];
   todoListItems.splice(taskTwoIndex, 0, tmpItem);
 
-  todoListItems = todoListItems.reduce((tasks, task, idx) => {
-    const next = idx + 1;
-    return [...tasks, { ...task, index: next }];
-  }, []);
+  todoListItems = todoListItems.map((task, idx) => ({ ...task, index: idx + 1 }));
 
   localStorage.setItem('todo', JSON.stringify(todoListItems));
   taskListEl.innerHTML = '';
