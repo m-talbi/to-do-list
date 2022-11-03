@@ -1,8 +1,9 @@
 let dragStartTaskEl;
 let todoListItems;
 
-const swapTaskEl = (dragStartTaskEl, dragEndTaskEl) => {
+const swapTaskEl = (dragStartTaskEl, dragEndTaskEl, callback) => {
   const listContainer = document.querySelectorAll('ul li');
+  const taskListEl = document.getElementById('tasksList');
   let taskOneIndex;
   let taskTwoIndex;
 
@@ -25,7 +26,15 @@ const swapTaskEl = (dragStartTaskEl, dragEndTaskEl) => {
 
   const tmpItem = todoListItems.splice(taskOneIndex, 1)[0];
   todoListItems.splice(taskTwoIndex, 0, tmpItem);
+
+  todoListItems = todoListItems.reduce((tasks, task, idx) => {
+    const next = idx + 1;
+    return [...tasks, { ...task, index: next }];
+  }, []);
+
   localStorage.setItem('todo', JSON.stringify(todoListItems));
+  taskListEl.innerHTML = '';
+  callback();
 };
 
 const dragStart = (ev) => {
@@ -36,9 +45,9 @@ const dragOver = (ev) => {
   ev.preventDefault();
 };
 
-const drop = (ev) => {
+const drop = (ev, callback) => {
   const dragEndTaskEl = ev.target.closest('li');
-  swapTaskEl(dragStartTaskEl, dragEndTaskEl);
+  swapTaskEl(dragStartTaskEl, dragEndTaskEl, callback);
   ev.target.closest('article').classList.remove('drag_over');
 };
 
@@ -50,25 +59,16 @@ const dragLeave = (ev) => {
   ev.target.closest('article').classList.remove('drag_over');
 };
 
-export const addDraggableListener = (draggableItem, listItems) => {
+const addDraggableListener = (draggableItem, listItems, callback) => {
   draggableItem.addEventListener('dragstart', dragStart);
   draggableItem.addEventListener('dragover', dragOver);
-  draggableItem.addEventListener('drop', drop);
+  draggableItem.addEventListener('drop', (ev) => {
+    drop(ev, callback);
+  });
   draggableItem.addEventListener('dragenter', dragEnter);
   draggableItem.addEventListener('dragleave', dragLeave);
 
   todoListItems = listItems;
 };
 
-export const addDraggablesListener = (listItems) => {
-  const draggables = document.querySelectorAll('.task');
-  todoListItems = listItems;
-
-  draggables.forEach((draggable) => {
-    draggable.addEventListener('dragstart', dragStart);
-    draggable.addEventListener('dragover', dragOver);
-    draggable.addEventListener('drop', drop);
-    draggable.addEventListener('dragenter', dragEnter);
-    draggable.addEventListener('dragleave', dragLeave);
-  });
-};
+export default addDraggableListener;
