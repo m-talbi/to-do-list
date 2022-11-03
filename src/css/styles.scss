@@ -19,6 +19,31 @@ body {
   overflow: hidden;
 }
 
+.line_through {
+  text-decoration-line: line-through;
+}
+
+.drag_over {
+  background-color: rgb(214, 214, 214);
+}
+
+.edit_active {
+  display: block !important;
+}
+
+.task_description {
+  all: unset;
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  padding: 0 2.88rem;
+  font-size: 16px;
+  background-color: rgb(255, 222, 180);
+  z-index: 9;
+}
+
 header {
   background-color: rgb(44, 102, 160);
   width: 100%;
@@ -76,6 +101,7 @@ li {
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
+    position: relative;
 
     & .todo__task {
       display: flex;
@@ -83,12 +109,20 @@ li {
 
       & input[type=checkbox] {
         cursor: pointer;
+        z-index: 10;
       }
     }
 
-    & .options-icon {
-      padding: 0.6rem;
-      font-size: 20px;
+    & .task_options {
+      display: flex;
+      gap: 1rem;
+
+      & i {
+        padding: 0.6rem;
+        font-size: 20px;
+        cursor: pointer;
+        color: rgb(61, 61, 61);
+      }
     }
   }
 }
