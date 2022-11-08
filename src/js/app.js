@@ -33,7 +33,7 @@ const handleTaskBtnsClick = (id, displayToDoList) => {
   const taskDescription = taskEl.querySelector('p');
 
   taskCheckBox.addEventListener('change', () => {
-    toggleCheckBox(taskEl, taskDescription, toDoList);
+    toggleCheckBox(taskEl, taskDescription, taskCheckBox, toDoList);
   });
 
   taskDeleteIcon.addEventListener('click', () => {
@@ -61,7 +61,7 @@ const handleFormSubmit = () => {
     const taskObj = {
       description: form['task-description'].value.trim(),
       isCompleted: false,
-      index: toDoList.length === 0 ? 1 : toDoList.at(-1).index + 1,
+      index: toDoList.length + 1,
     };
 
     toDoList.push(taskObj);
