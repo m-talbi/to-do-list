@@ -68,8 +68,8 @@ export const appendTaskEl = (task, tasksListEl) => {
   <li id="${task.index}" class="task" draggable="true">
     <article>
     <div class="todo__task">
-      <input class="task_checkbox" type="checkbox" ${task.isCompleted && 'checked'} />
-      <p class="${task.isCompleted && 'line_through'}">${task.description}</p>
+      <input class="task_checkbox" type="checkbox" ${task.isCompleted ? 'checked' : ''} />
+      <p class="${task.isCompleted ? 'line_through' : ''}">${task.description}</p>
       <input class="task_description" value="${task.description}" />
     </div>
       <div class="task_options">
