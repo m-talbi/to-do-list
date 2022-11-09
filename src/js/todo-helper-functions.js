@@ -63,6 +63,11 @@ export const toggleCheckBox = (taskEl, taskDescription, taskCheckBox, toDoList) 
   taskDescription.classList.toggle('line_through');
 };
 
+export const saveTaskLocalStorage = (taskObj, toDoList) => {
+  toDoList.push(taskObj);
+  localStorage.setItem('todo', JSON.stringify(toDoList));
+};
+
 export const appendTaskEl = (task, tasksListEl) => {
   const taskEl = `
   <li id="${task.index}" class="task" draggable="true">

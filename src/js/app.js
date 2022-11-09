@@ -3,6 +3,7 @@ import {
   toggleCheckBox,
   appendTaskEl,
   removeTaskEl,
+  saveTaskLocalStorage,
 } from './todo-helper-functions.js';
 import addDraggableListener from './dragEffect.js';
 
@@ -64,9 +65,7 @@ const handleFormSubmit = () => {
       index: toDoList.length + 1,
     };
 
-    toDoList.push(taskObj);
-    localStorage.setItem('todo', JSON.stringify(toDoList));
-
+    saveTaskLocalStorage(taskObj, toDoList);
     appendTaskEl(taskObj, tasksListEl);
     handleTaskBtnsClick(taskObj.index, displayToDoList);
     addDraggableListener(tasksListEl.lastElementChild, toDoList, displayToDoList);
