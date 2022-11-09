@@ -51,7 +51,7 @@ describe('Add task element <li> to task list <ul>', () => {
 });
 
 describe('Remove task element <li> from task list <ul>', () => {
-  test('remove function should remove a task item', () => {
+  test('remove function should remove a task item from task list <ul>', () => {
     document.body.innerHTML = `
     <main>
       <form action="">
@@ -68,7 +68,7 @@ describe('Remove task element <li> from task list <ul>', () => {
     removeTaskEl(taskEl, toDoList, tasksListEl);
     expect(tasksListEl.lastElementChild).toBeNull();
   });
-  test('remove function should remove a task item', () => {
+  test('remove function should remove a task item from local storage', () => {
     document.body.innerHTML = `
     <main>
       <form action="">
