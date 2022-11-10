@@ -13,7 +13,7 @@ const form = document.querySelector('form');
 
 let toDoList;
 
-const handleClearListBtnClick = (displayToDoList) => {
+export const handleClearListBtnClick = (displayToDoList) => {
   clearListBtn.addEventListener('click', () => {
     const filteredTaskList = toDoList.filter((task) => !task.isCompleted);
     toDoList = filteredTaskList.map((task, idx) => ({ ...task, index: idx + 1 }));
@@ -24,9 +24,7 @@ const handleClearListBtnClick = (displayToDoList) => {
   });
 };
 
-const handleTaskBtnsClick = (id, displayToDoList) => {
-  const taskEl = document.getElementById(`${id}`);
-
+export const handleTaskBtnsClick = (taskEl, displayToDoList) => {
   const taskCheckBox = taskEl.querySelector('.task_checkbox');
   const taskDeleteIcon = taskEl.querySelector('.delete-option-icon');
   const taskEditIcon = taskEl.querySelector('.edit-option-icon');
@@ -46,11 +44,11 @@ const handleTaskBtnsClick = (id, displayToDoList) => {
   });
 };
 
-const displayToDoList = () => {
+export const displayToDoList = () => {
   toDoList = JSON.parse(localStorage.getItem('todo')) || [];
   toDoList.forEach((task) => {
     appendTaskEl(task, tasksListEl);
-    handleTaskBtnsClick(task.index, displayToDoList);
+    handleTaskBtnsClick(tasksListEl.lastElementChild, displayToDoList);
     addDraggableListener(tasksListEl.lastElementChild, toDoList, displayToDoList);
   });
 };
@@ -67,7 +65,7 @@ const handleFormSubmit = () => {
 
     saveTaskLocalStorage(taskObj, toDoList);
     appendTaskEl(taskObj, tasksListEl);
-    handleTaskBtnsClick(taskObj.index, displayToDoList);
+    handleTaskBtnsClick(tasksListEl.lastElementChild, displayToDoList);
     addDraggableListener(tasksListEl.lastElementChild, toDoList, displayToDoList);
     form.reset();
   });
