@@ -9,6 +9,7 @@ import {
 import {
   getAddedTask,
   handleTaskBtnsClick,
+  handleClearListBtnClick,
 } from '../__mocks__/utils.js';
 
 let mockTaskData = [
@@ -54,7 +55,10 @@ describe('Update task description', () => {
     taskEditInput.value = updatedDescription;
 
     // trigger enter key press
-    const keyEvent = new KeyboardEvent('keypress', { key: 'Enter', shiftKey: false });
+    const keyEvent = new KeyboardEvent('keypress', {
+      key: 'Enter',
+      shiftKey: false,
+    });
     taskEditInput.dispatchEvent(keyEvent);
 
     const taskFromElement = getAddedTask(tasksListEl);
@@ -105,5 +109,65 @@ describe('Update an item completed status', () => {
     expect(taskFromElement.isCompleted).toBeTruthy();
     expect(taskFromStorage.isCompleted).toBeTruthy();
     localStorage.removeItem('todo');
+  });
+});
+
+describe('Clear completed tasks from list', () => {
+  test('Clear method should remove a completed task from dom and local storage', () => {
+    document.body.innerHTML = `
+      <main>
+        <form action="">
+          <input id="task-description" type="text" placeholder="Add to your list.." required />
+        </form>
+        <ul id="tasksList"></ul>
+      </main>
+      <footer>
+        <input id="clear-list" type="button" value="Clear all completed" />
+      </footer>
+    `;
+
+    mockTaskData = [
+      {
+        description: 'Feed the cats',
+        isCompleted: false,
+        index: 1,
+      },
+      {
+        description: 'Do my homework',
+        isCompleted: false,
+        index: 2,
+      },
+    ];
+    const toDoList = JSON.parse(localStorage.getItem('todo')) || [];
+
+    const tasksListEl = document.getElementById('tasksList');
+    const clearListBtn = document.getElementById('clear-list');
+
+    mockTaskData.forEach((task) => {
+      appendTaskEl(task, tasksListEl);
+      saveTaskLocalStorage(task, toDoList);
+    });
+
+    handleTaskBtnsClick(tasksListEl.firstElementChild, toDoList, tasksListEl);
+    handleTaskBtnsClick(tasksListEl.lastElementChild, toDoList, tasksListEl);
+
+    handleClearListBtnClick(toDoList, tasksListEl, clearListBtn);
+
+    const tasksCheckBoxes = tasksListEl.querySelectorAll('.task_checkbox');
+
+    tasksCheckBoxes.forEach((checkBox) => {
+      checkBox.click();
+    });
+
+    clearListBtn.click();
+
+    const taskFromStorage = JSON.parse(localStorage.getItem('todo'))[0];
+    const taskFromElement = getAddedTask(tasksListEl);
+
+    expect(taskFromElement).toBeNull();
+
+    expect(taskFromStorage?.description).toBeUndefined();
+    expect(taskFromStorage?.index).toBeUndefined();
+    expect(taskFromStorage?.isCompleted).toBeUndefined();
   });
 });
