@@ -1,8 +1,8 @@
 let dragStartTaskEl;
 let todoListItems;
 
-const swapTaskEl = (dragStartTaskEl, dragEndTaskEl, callback) => {
-  const listContainer = document.querySelectorAll('ul li');
+const swapTaskEl = (dragStartTaskEl, dragEndTaskEl) => {
+  const listContainer = document.querySelectorAll('.task');
   const taskListEl = document.getElementById('tasksList');
   let taskOneIndex;
   let taskTwoIndex;
@@ -31,7 +31,7 @@ const swapTaskEl = (dragStartTaskEl, dragEndTaskEl, callback) => {
 
   localStorage.setItem('todo', JSON.stringify(todoListItems));
   taskListEl.innerHTML = '';
-  callback();
+  // display to list
 };
 
 const dragStart = (ev) => {
@@ -42,9 +42,9 @@ const dragOver = (ev) => {
   ev.preventDefault();
 };
 
-const drop = (ev, callback) => {
+const drop = (ev) => {
   const dragEndTaskEl = ev.target.closest('li');
-  swapTaskEl(dragStartTaskEl, dragEndTaskEl, callback);
+  swapTaskEl(dragStartTaskEl, dragEndTaskEl);
   ev.target.closest('article').classList.remove('drag_over');
 };
 
@@ -56,11 +56,11 @@ const dragLeave = (ev) => {
   ev.target.closest('article').classList.remove('drag_over');
 };
 
-const addDraggableListener = (draggableItem, listItems, callback) => {
+const addDraggableListener = (draggableItem, listItems) => {
   draggableItem.addEventListener('dragstart', dragStart);
   draggableItem.addEventListener('dragover', dragOver);
   draggableItem.addEventListener('drop', (ev) => {
-    drop(ev, callback);
+    drop(ev);
   });
   draggableItem.addEventListener('dragenter', dragEnter);
   draggableItem.addEventListener('dragleave', dragLeave);
