@@ -13,64 +13,9 @@ const placeCursorTextEnd = (inputEl) => {
   }
 };
 
-const hideTaskEl = (taskEl, taskEditInput, taskCheckBox) => {
-  taskEditInput.classList.add('edit_active');
-  taskEditInput.style.width = `${taskEl.offsetWidth}px`;
-  taskEditInput.style.height = `${taskEl.offsetHeight + 1}px`;
-
-  taskCheckBox.setAttribute('disabled', true);
-  taskEl.setAttribute('draggable', false);
-};
-
-const showTaskEl = (taskEl, taskEditInput, taskCheckBox) => {
-  taskCheckBox.removeAttribute('disabled');
-  taskEl.setAttribute('draggable', true);
-  taskEditInput.classList.remove('edit_active');
-};
-
-export const showEditField = (taskEl, taskEditInput, taskCheckBox, taskDescription, toDoList) => {
-  hideTaskEl(taskEl, taskEditInput, taskCheckBox);
-  placeCursorTextEnd(taskEditInput);
-
-  taskEditInput.addEventListener('keypress', (ev) => {
-    if (ev.key !== 'Enter') return;
-
-    const editedText = taskEditInput.value;
-
-    toDoList
-      .find((task) => task.index === parseInt(taskEl.id, 10))
-      .description = editedText;
-
-    localStorage.setItem('todo', JSON.stringify(toDoList));
-
-    taskDescription.textContent = editedText;
-    showTaskEl(taskEl, taskEditInput, taskCheckBox);
-  });
-
-  document.addEventListener('click', (ev) => {
-    if (ev.target.closest('li') === taskEl) return;
-    taskEditInput.value = taskDescription.textContent;
-    showTaskEl(taskEl, taskEditInput, taskCheckBox);
-  });
-};
-
-export const toggleCheckBox = (taskEl, taskDescription, taskCheckBox, toDoList) => {
-  toDoList
-    .find((task) => task.index === parseInt(taskEl.id, 10))
-    .isCompleted = taskCheckBox.checked;
-
-  localStorage.setItem('todo', JSON.stringify(toDoList));
-  taskDescription.classList.toggle('line_through');
-};
-
-export const saveTaskLocalStorage = (taskObj, toDoList) => {
-  toDoList.push(taskObj);
-  localStorage.setItem('todo', JSON.stringify(toDoList));
-};
-
 export const appendTaskEl = (task, tasksListEl) => {
   const taskEl = `
-  <li id="${task.index}" class="task" draggable="true">
+  <li id="t${task.index}" class="task" draggable="true">
     <article>
     <div class="todo__task">
       <input class="task_checkbox" type="checkbox" ${task.isCompleted ? 'checked' : ''} />
@@ -87,12 +32,76 @@ export const appendTaskEl = (task, tasksListEl) => {
   tasksListEl.insertAdjacentHTML('beforeend', taskEl);
 };
 
-export const removeTaskEl = (taskEl, taskListEl, toDoList, callback) => {
-  const filteredTaskList = toDoList.filter((task) => task.index !== parseInt(taskEl.id, 10));
+export const saveTaskLocalStorage = (taskObj, toDoList) => {
+  toDoList.push(taskObj);
+  localStorage.setItem('todo', JSON.stringify(toDoList));
+};
 
-  toDoList = filteredTaskList.map((task, idx) => ({ ...task, index: idx + 1 }));
+export const removeTaskEl = (taskEl, tasksContainerEl, todoList) => {
+  const id = taskEl.id.match(/t(\d+)/)[1];
+  const item = todoList.find((task) => task.index === parseInt(id, 10));
+  tasksContainerEl.querySelector(`#t${item.index}`).remove();
+  todoList.splice(item, 1);
+
+  const { children } = tasksContainerEl;
+  for (let idx = 0; idx < children.length; idx += 1) {
+    children.item(idx).id = `t${idx + 1}`;
+    todoList[idx].index = idx + 1;
+  }
+  localStorage.setItem('todo', JSON.stringify(todoList));
+};
+
+const hideTaskEl = (taskEl, taskEditInput, taskCheckBox) => {
+  taskEditInput.classList.add('edit_active');
+  taskEditInput.style.width = `${taskEl.offsetWidth}px`;
+  taskEditInput.style.height = `${taskEl.offsetHeight + 1}px`;
+
+  taskCheckBox.setAttribute('disabled', true);
+  taskEl.setAttribute('draggable', false);
+};
+
+const showTaskEl = (taskEl, taskEditInput, taskCheckBox) => {
+  taskCheckBox.removeAttribute('disabled');
+  taskEl.setAttribute('draggable', true);
+  taskEditInput.classList.remove('edit_active');
+};
+
+export const editTask = (toDoList, id, editedText, taskDescription) => {
+  toDoList
+    .find((task) => task.index === parseInt(id, 10))
+    .description = editedText;
+
+  taskDescription.textContent = editedText;
+  localStorage.setItem('todo', JSON.stringify(toDoList));
+};
+
+export const showEditField = (taskEl, taskEditInput, taskCheckBox, taskDescription, toDoList) => {
+  hideTaskEl(taskEl, taskEditInput, taskCheckBox);
+  placeCursorTextEnd(taskEditInput);
+
+  taskEditInput.addEventListener('keypress', (ev) => {
+    if (ev.key !== 'Enter') return;
+
+    const id = taskEl.id.match(/t(\d+)/)[1];
+    const editedText = taskEditInput.value;
+
+    editTask(toDoList, id, editedText, taskDescription);
+    showTaskEl(taskEl, taskEditInput, taskCheckBox);
+  });
+
+  document.addEventListener('click', (ev) => {
+    if (ev.target.closest('li') === taskEl) return;
+    taskEditInput.value = taskDescription.textContent;
+    showTaskEl(taskEl, taskEditInput, taskCheckBox);
+  });
+};
+
+export const toggleCheckBox = (taskEl, taskDescription, taskCheckBox, toDoList) => {
+  const id = taskEl.id.match(/t(\d+)/)[1];
+  toDoList
+    .find((task) => task.index === parseInt(id, 10))
+    .isCompleted = taskCheckBox.checked;
 
   localStorage.setItem('todo', JSON.stringify(toDoList));
-  taskListEl.innerHTML = '';
-  callback();
+  taskDescription.classList.toggle('line_through');
 };
