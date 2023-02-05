@@ -2,94 +2,64 @@
  * @jest-environment jsdom
  */
 
-import { appendTaskEl, saveTaskLocalStorage } from '../js/todo-helper-functions.js';
-import { getAddedTask, removeTaskEl } from '../__mocks__/utils.js';
-
-const toDoList = JSON.parse(localStorage.getItem('todo')) || [];
-
-const mockTaskData = [
-  {
-    description: 'Feed the cats',
-    isCompleted: false,
-    index: toDoList.length + 1,
-  },
-  {
-    description: 'Feed the cats',
-    isCompleted: false,
-    index: toDoList.length + 1,
-  },
-];
+import { appendTaskEl, removeTaskEl, saveTaskLocalStorage } from '../js/modules/helpers.js';
+import TodoListApp from '../js/modules/app.js';
+import mockTaskData from '../__mocks__/data.js';
+import getAddedTask from '../__mocks__/utility.js';
 
 describe('Add task element <li> to task list <ul>', () => {
+  document.body.innerHTML = `
+      <main>
+        <form action="">
+          <input id="task-description" type="text" placeholder="Add to your list.." required />
+        </form>
+        <ul id="tasksList"></ul>
+      </main>
+      <footer>
+        <input id="clear-list" type="button" value="Clear all completed" />
+      </footer>
+    `;
+
+  const tasksListEl = document.getElementById('tasksList');
+  const form = document.querySelector('form');
+  const clearListBtn = document.getElementById('clear-list');
+  let todoList = [];
+  const app = new TodoListApp(form, tasksListEl, clearListBtn);
+  app.initializeTodoList();
+
+  beforeEach(() => {
+    todoList = [];
+    tasksListEl.innerHTML = '';
+  });
+
   test('Append function should add a new task item', () => {
-    document.body.innerHTML = `
-    <main>
-      <form action="">
-        <input id="task-description" type="text" placeholder="Add to your list.." required />
-      </form>
-      <ul id="tasksList"></ul>
-    </main>
-    `;
-
-    const tasksListEl = document.getElementById('tasksList');
-
     appendTaskEl(mockTaskData[0], tasksListEl);
-    const { description, index, isCompleted } = getAddedTask(tasksListEl);
-
-    expect(description).toBe(mockTaskData[0].description);
-    expect(index).toBe(mockTaskData[0].index.toString());
-    expect(isCompleted).toBe(mockTaskData[0].isCompleted);
+    const task = getAddedTask(tasksListEl);
+    expect(task).toEqual(mockTaskData[0]);
   });
+
   test('saveTaskLocalStorage function should add new a task item in local storage', () => {
-    saveTaskLocalStorage(mockTaskData[1], toDoList);
-    const { description, index, isCompleted } = JSON.parse(localStorage.getItem('todo'))[0];
-
-    expect(description).toBe(mockTaskData[1].description);
-    expect(index).toBe(mockTaskData[1].index);
-    expect(isCompleted).toBe(mockTaskData[1].isCompleted);
+    saveTaskLocalStorage(mockTaskData[1], todoList);
+    const task = JSON.parse(localStorage.getItem('todo'))[0];
+    expect(task).toEqual(mockTaskData[1]);
   });
-});
 
-describe('Remove task element <li> from task list <ul>', () => {
-  test('remove function should remove a task item from task list <ul>', () => {
-    document.body.innerHTML = `
-    <main>
-      <form action="">
-        <input id="task-description" type="text" placeholder="Add to your list.." required />
-      </form>
-      <ul id="tasksList"></ul>
-    </main>
-    `;
-
-    const tasksListEl = document.getElementById('tasksList');
-
+  test('remove function should remove a task item from the DOM', () => {
     appendTaskEl(mockTaskData[0], tasksListEl);
+    saveTaskLocalStorage(mockTaskData[0], todoList);
     const taskEl = tasksListEl.lastElementChild;
-    removeTaskEl(taskEl, toDoList, tasksListEl);
+    removeTaskEl(taskEl, tasksListEl, todoList);
     expect(tasksListEl.lastElementChild).toBeNull();
   });
+
   test('remove function should remove a task item from local storage', () => {
-    document.body.innerHTML = `
-    <main>
-      <form action="">
-        <input id="task-description" type="text" placeholder="Add to your list.." required />
-      </form>
-      <ul id="tasksList"></ul>
-    </main>
-    `;
-
-    const tasksListEl = document.getElementById('tasksList');
-
     appendTaskEl(mockTaskData[1], tasksListEl);
-    saveTaskLocalStorage(mockTaskData[1], toDoList);
+    saveTaskLocalStorage(mockTaskData[1], todoList);
 
     const taskEl = tasksListEl.lastElementChild;
-    removeTaskEl(taskEl, toDoList, tasksListEl);
+    removeTaskEl(taskEl, tasksListEl, todoList);
 
-    const taskObj = JSON.parse(localStorage.getItem('todo'))[0];
-
-    expect(taskObj?.description).toBeUndefined();
-    expect(taskObj?.index).toBeUndefined();
-    expect(taskObj?.isCompleted).toBeUndefined();
+    const task = JSON.parse(localStorage.getItem('todo'))[0];
+    expect(task).toEqual(undefined);
   });
 });
