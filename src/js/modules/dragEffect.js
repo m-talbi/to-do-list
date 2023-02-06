@@ -1,3 +1,5 @@
+import { reOrderTasks } from './helpers.js';
+
 let dragStartTaskEl;
 let todoListItems;
 
@@ -26,12 +28,7 @@ const swapTaskEl = (dragStartTaskEl, dragEndTaskEl) => {
 
   const tmpItem = todoListItems.splice(taskOneIndex, 1)[0];
   todoListItems.splice(taskTwoIndex, 0, tmpItem);
-
-  todoListItems = todoListItems.map((task, idx) => ({ ...task, index: idx + 1 }));
-
-  localStorage.setItem('todo', JSON.stringify(todoListItems));
-  taskListEl.innerHTML = '';
-  // display to list
+  reOrderTasks(taskListEl, todoListItems);
 };
 
 const dragStart = (ev) => {
