@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-  entry: ['./src/css/styles.scss', './src/js/app.js'],
+  entry: ['./src/css/styles.scss', './src/js/main.js'],
   module: {
     rules: [
       {

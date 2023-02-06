@@ -3,118 +3,15 @@
  */
 
 import {
-  appendTaskEl,
-  saveTaskLocalStorage,
-} from '../js/todo-helper-functions.js';
-import {
-  getAddedTask,
-  handleTaskBtnsClick,
-  handleClearListBtnClick,
-} from '../__mocks__/utils.js';
-
-let mockTaskData = [
-  {
-    description: 'Feed the cats',
-    isCompleted: false,
-    index: 1,
-  },
-  {
-    description: 'Do my homework',
-    isCompleted: false,
-    index: 2,
-  },
-];
+  appendTaskEl, editTask,
+  saveTaskLocalStorage, toggleCheckBox,
+} from '../js/modules/helpers.js';
+import TodoListApp from '../js/modules/app.js';
+import mockTaskData from '../__mocks__/data.js';
+import getAddedTask from '../__mocks__/utility.js';
 
 describe('Update task description', () => {
-  test('Update method should update both the dom and local storage', () => {
-    document.body.innerHTML = `
-     <main>
-       <form action="">
-         <input id="task-description" type="text" placeholder="Add to your list.." required />
-       </form>
-       <ul id="tasksList"></ul>
-     </main>
-    `;
-
-    const toDoList = JSON.parse(localStorage.getItem('todo')) || [];
-    const tasksListEl = document.getElementById('tasksList');
-
-    appendTaskEl(mockTaskData[1], tasksListEl);
-    saveTaskLocalStorage(mockTaskData[1], toDoList);
-
-    handleTaskBtnsClick(tasksListEl.lastElementChild, toDoList, tasksListEl);
-
-    const updatedDescription = 'Do my math homework';
-
-    const taskEditIcon = tasksListEl.lastElementChild.querySelector('.edit-option-icon');
-    const taskEditInput = tasksListEl.lastElementChild.querySelector('.task_description');
-
-    // Open edit mode
-    taskEditIcon.click();
-    // update input field
-    taskEditInput.value = updatedDescription;
-
-    // trigger enter key press
-    const keyEvent = new KeyboardEvent('keypress', {
-      key: 'Enter',
-      shiftKey: false,
-    });
-    taskEditInput.dispatchEvent(keyEvent);
-
-    const taskFromElement = getAddedTask(tasksListEl);
-    const taskFromStorage = JSON.parse(localStorage.getItem('todo'))[0];
-
-    expect(taskFromElement.description).toBe(updatedDescription);
-    expect(taskFromStorage.description).toBe(updatedDescription);
-    localStorage.removeItem('todo');
-  });
-});
-
-describe('Update an item completed status', () => {
-  test('Clicking on task checkbox should change task completed status', () => {
-    document.body.innerHTML = `
-      <main>
-        <form action="">
-          <input id="task-description" type="text" placeholder="Add to your list.." required />
-        </form>
-        <ul id="tasksList"></ul>
-      </main>
-    `;
-
-    mockTaskData = [
-      {
-        description: 'Feed the cats',
-        isCompleted: false,
-        index: 1,
-      },
-      {
-        description: 'Do my homework',
-        isCompleted: false,
-        index: 2,
-      },
-    ];
-    const toDoList = JSON.parse(localStorage.getItem('todo')) || [];
-    const tasksListEl = document.getElementById('tasksList');
-
-    appendTaskEl(mockTaskData[0], tasksListEl);
-    saveTaskLocalStorage(mockTaskData[0], toDoList);
-    handleTaskBtnsClick(tasksListEl.firstElementChild, toDoList, tasksListEl);
-
-    const taskCheckBox = tasksListEl.querySelector('.task_checkbox');
-    taskCheckBox.click();
-
-    const taskFromStorage = JSON.parse(localStorage.getItem('todo'))[0];
-    const taskFromElement = getAddedTask(tasksListEl);
-
-    expect(taskFromElement.isCompleted).toBeTruthy();
-    expect(taskFromStorage.isCompleted).toBeTruthy();
-    localStorage.removeItem('todo');
-  });
-});
-
-describe('Clear completed tasks from list', () => {
-  test('Clear method should remove a completed task from dom and local storage', () => {
-    document.body.innerHTML = `
+  document.body.innerHTML = `
       <main>
         <form action="">
           <input id="task-description" type="text" placeholder="Add to your list.." required />
@@ -126,32 +23,62 @@ describe('Clear completed tasks from list', () => {
       </footer>
     `;
 
-    mockTaskData = [
-      {
-        description: 'Feed the cats',
-        isCompleted: false,
-        index: 1,
-      },
-      {
-        description: 'Do my homework',
-        isCompleted: false,
-        index: 2,
-      },
-    ];
-    const toDoList = JSON.parse(localStorage.getItem('todo')) || [];
+  const tasksListEl = document.getElementById('tasksList');
+  const form = document.querySelector('form');
+  const clearListBtn = document.getElementById('clear-list');
+  let todoList = [];
+  const app = new TodoListApp(form, tasksListEl, clearListBtn);
+  app.initializeTodoList();
 
-    const tasksListEl = document.getElementById('tasksList');
-    const clearListBtn = document.getElementById('clear-list');
+  beforeEach(() => {
+    todoList = [];
+    localStorage.setItem('todo', '[]');
+    tasksListEl.innerHTML = '';
+  });
 
+  test('Update method should update both the DOM and local storage', () => {
+    appendTaskEl(mockTaskData[0], tasksListEl);
+    saveTaskLocalStorage(mockTaskData[0], todoList);
+
+    const updatedDescription = 'Do my math homework';
+    const taskDescription = tasksListEl.lastElementChild.querySelector('p');
+
+    editTask(todoList, mockTaskData[0].index, updatedDescription, taskDescription);
+
+    const taskFromDOM = getAddedTask(tasksListEl);
+    const taskFromStorage = JSON.parse(localStorage.getItem('todo'))[0];
+
+    expect(taskFromDOM.description).toBe(updatedDescription);
+    expect(taskFromStorage.description).toBe(updatedDescription);
+  });
+
+  test('Clicking on task checkbox should change task completed status', () => {
+    appendTaskEl(mockTaskData[1], tasksListEl);
+    saveTaskLocalStorage(mockTaskData[1], todoList);
+
+    const taskCheckBox = tasksListEl.querySelector('.task_checkbox');
+    const taskDescription = tasksListEl.lastElementChild.querySelector('p');
+
+    taskCheckBox.click();
+    toggleCheckBox(
+      tasksListEl.lastElementChild,
+      taskDescription,
+      taskCheckBox,
+      todoList,
+    );
+
+    const taskFromStorage = JSON.parse(localStorage.getItem('todo'))[0];
+    const taskFromElement = getAddedTask(tasksListEl);
+
+    expect(taskFromElement.isCompleted).toBeTruthy();
+    expect(taskFromStorage.isCompleted).toBeTruthy();
+  });
+
+  test('Clear method should remove a completed task from dom and local storage', () => {
     mockTaskData.forEach((task) => {
       appendTaskEl(task, tasksListEl);
-      saveTaskLocalStorage(task, toDoList);
+      saveTaskLocalStorage(task, todoList);
     });
-
-    handleTaskBtnsClick(tasksListEl.firstElementChild, toDoList, tasksListEl);
-    handleTaskBtnsClick(tasksListEl.lastElementChild, toDoList, tasksListEl);
-
-    handleClearListBtnClick(toDoList, tasksListEl, clearListBtn);
 
     const tasksCheckBoxes = tasksListEl.querySelectorAll('.task_checkbox');
 
@@ -165,9 +92,6 @@ describe('Clear completed tasks from list', () => {
     const taskFromElement = getAddedTask(tasksListEl);
 
     expect(taskFromElement).toBeNull();
-
-    expect(taskFromStorage?.description).toBeUndefined();
-    expect(taskFromStorage?.index).toBeUndefined();
-    expect(taskFromStorage?.isCompleted).toBeUndefined();
+    expect(taskFromStorage).toEqual(undefined);
   });
 });
