@@ -13,6 +13,30 @@ const placeCursorTextEnd = (inputEl) => {
   }
 };
 
+const hideTaskEl = (taskEl, taskEditInput, taskCheckBox) => {
+  taskEditInput.classList.add('edit_active');
+  taskEditInput.style.width = `${taskEl.offsetWidth}px`;
+  taskEditInput.style.height = `${taskEl.offsetHeight + 1}px`;
+
+  taskCheckBox.setAttribute('disabled', true);
+  taskEl.setAttribute('draggable', false);
+};
+
+const showTaskEl = (taskEl, taskEditInput, taskCheckBox) => {
+  taskCheckBox.removeAttribute('disabled');
+  taskEl.setAttribute('draggable', true);
+  taskEditInput.classList.remove('edit_active');
+};
+
+export const reOrderTasks = (tasksContainerEl, todoList) => {
+  const { children } = tasksContainerEl;
+  for (let idx = 0; idx < children.length; idx += 1) {
+    children.item(idx).id = `t${idx + 1}`;
+    todoList[idx].index = idx + 1;
+  }
+  localStorage.setItem('todo', JSON.stringify(todoList));
+};
+
 export const appendTaskEl = (task, tasksListEl) => {
   const taskEl = `
   <li id="t${task.index}" class="task" draggable="true">
@@ -42,28 +66,7 @@ export const removeTaskEl = (taskEl, tasksContainerEl, todoList) => {
   const item = todoList.find((task) => task.index === parseInt(id, 10));
   tasksContainerEl.querySelector(`#t${item.index}`).remove();
   todoList.splice(item, 1);
-
-  const { children } = tasksContainerEl;
-  for (let idx = 0; idx < children.length; idx += 1) {
-    children.item(idx).id = `t${idx + 1}`;
-    todoList[idx].index = idx + 1;
-  }
-  localStorage.setItem('todo', JSON.stringify(todoList));
-};
-
-const hideTaskEl = (taskEl, taskEditInput, taskCheckBox) => {
-  taskEditInput.classList.add('edit_active');
-  taskEditInput.style.width = `${taskEl.offsetWidth}px`;
-  taskEditInput.style.height = `${taskEl.offsetHeight + 1}px`;
-
-  taskCheckBox.setAttribute('disabled', true);
-  taskEl.setAttribute('draggable', false);
-};
-
-const showTaskEl = (taskEl, taskEditInput, taskCheckBox) => {
-  taskCheckBox.removeAttribute('disabled');
-  taskEl.setAttribute('draggable', true);
-  taskEditInput.classList.remove('edit_active');
+  reOrderTasks(tasksContainerEl, todoList);
 };
 
 export const editTask = (toDoList, id, editedText, taskDescription) => {
