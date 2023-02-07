@@ -9,14 +9,11 @@ const swapTaskEl = (dragStartTaskEl, dragEndTaskEl) => {
   let taskOneIndex;
   let taskTwoIndex;
 
-  listContainer.forEach((task, index) => {
-    if (task === dragStartTaskEl) {
-      taskOneIndex = index;
-    }
-    if (task === dragEndTaskEl) {
-      taskTwoIndex = index;
-    }
-  });
+  for (let i = 0; i < listContainer.length; i += 1) {
+    if (taskOneIndex !== undefined && taskTwoIndex !== undefined) break;
+    else if (listContainer[i] === dragStartTaskEl) taskOneIndex = i;
+    else if (listContainer[i] === dragEndTaskEl) taskTwoIndex = i;
+  }
 
   if (taskOneIndex > taskTwoIndex) {
     listContainer.item(taskTwoIndex).insertAdjacentElement('beforebegin', dragStartTaskEl);
@@ -31,34 +28,22 @@ const swapTaskEl = (dragStartTaskEl, dragEndTaskEl) => {
   reOrderTasks(taskListEl, todoListItems);
 };
 
-const dragStart = (ev) => {
-  dragStartTaskEl = ev.target.closest('li');
-};
-
-const dragOver = (ev) => {
-  ev.preventDefault();
-};
-
+const dragOver = (ev) => ev.preventDefault();
+const dragEnter = (ev) => ev.target.closest('article').classList.add('drag_over');
+const dragLeave = (ev) => ev.target.closest('article').classList.remove('drag_over');
 const drop = (ev) => {
   const dragEndTaskEl = ev.target.closest('li');
   swapTaskEl(dragStartTaskEl, dragEndTaskEl);
   ev.target.closest('article').classList.remove('drag_over');
 };
-
-const dragEnter = (ev) => {
-  ev.target.closest('article').classList.add('drag_over');
-};
-
-const dragLeave = (ev) => {
-  ev.target.closest('article').classList.remove('drag_over');
+const dragStart = (ev) => {
+  dragStartTaskEl = ev.target.closest('li');
 };
 
 const addDraggableListener = (draggableItem, listItems) => {
   draggableItem.addEventListener('dragstart', dragStart);
   draggableItem.addEventListener('dragover', dragOver);
-  draggableItem.addEventListener('drop', (ev) => {
-    drop(ev);
-  });
+  draggableItem.addEventListener('drop', drop);
   draggableItem.addEventListener('dragenter', dragEnter);
   draggableItem.addEventListener('dragleave', dragLeave);
 
