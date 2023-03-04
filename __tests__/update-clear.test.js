@@ -2,11 +2,10 @@
  * @jest-environment jsdom
  */
 
-import {
-  appendTaskEl, editTask,
-  saveTaskLocalStorage, toggleCheckBox,
-} from '../js/modules/helpers.js';
-import TodoListApp from '../js/modules/app.js';
+import { editTask, toggleCheckBox } from '../src/scripts/modules/editTask.js';
+import appendTaskEl from '../src/scripts/modules/addTask.js';
+import { saveTaskLocalStorage } from '../src/scripts/modules/utilities.js';
+import TodoListApp from '../src/scripts/modules/app.js';
 import mockTaskData from '../__mocks__/data.js';
 import getAddedTask from '../__mocks__/utility.js';
 
@@ -28,7 +27,7 @@ describe('Update task description', () => {
   const clearListBtn = document.getElementById('clear-list');
   let todoList = [];
   const app = new TodoListApp(form, tasksListEl, clearListBtn);
-  app.initializeTodoList();
+  app.initialize();
 
   beforeEach(() => {
     todoList = [];
