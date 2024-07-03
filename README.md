@@ -55,7 +55,7 @@
 
 ## 🚀 Live Demo <a name="live-demo"></a>
 
-- [Open live demo](https://kweeka1.github.io/to-do-list/dist/)
+- [Open live demo](https://m-talbi.github.io/to-do-list/dist/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
